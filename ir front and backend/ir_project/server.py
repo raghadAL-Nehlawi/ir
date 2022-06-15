@@ -19,6 +19,8 @@ txt_data = defaultdict(dict)
 
 txt_data = get_data_structerd_dataset(PATH_TO_CRAN_TXT, ID_marker)
 cleanedDocs = cleanDocs(txt_data)
+print("TETSS")
+print(txt_data['3000'])
 #TODO SAVE DATA
 
 
@@ -35,12 +37,12 @@ def index():
     correctedQuery = correct_word_spelling(query)
     print(query)
     if(correctedQuery.strip() != query.strip()):
-        data =  jsonify({"status": False, "data": correctedQuery})
+        data = jsonify({"status": False, "data": correctedQuery})
 
         return data
     else:
         trueQuery = get_similar_articles(cleanQuery(query), cleanedDocs)
-        data =  jsonify({"status": True, "data": trueQuery})
+        data = jsonify({"status": True, "data": trueQuery})
 
         return data
 

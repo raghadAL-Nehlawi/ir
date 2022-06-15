@@ -1,5 +1,9 @@
+import json
 import re
 from collections import defaultdict
+
+import numpy as np
+
 
 def get_data(PATH_TO_FILE, marker):
 
@@ -50,19 +54,34 @@ def get_data_structerd_dataset(PATH_TO_CRAN_TXT, ID_marker):
     txt_list = get_data(PATH_TO_CRAN_TXT, ID_marker)
     txt_data = defaultdict(dict)
     for line in txt_list:
-        id = get_id(line)
-        txt_data[id]["id"] = id
-        txt_data[id]["cross_references"] = get_cross_references(line)
-        txt_data[id]["enter_info"] = get_enter_info(re.split(re.compile('\.[X]'), line)[0])
-        txt_data[id]["authors"] = get_authors(re.split(re.compile('\.[X,N]'), line)[0])
-        txt_data[id]["publicationDate"] = get_publicationDate(re.split(re.compile('\.[X,N,A]'), line)[0])
-        txt_data[id]["abstract"] = get_abstract(re.split(re.compile('\.[X,N,A,B]'), line)[0])
-        txt_data[id]["title"] = re.split(re.compile('\.[X,N,A,B,W]'), line)[0].replace(".T", '')
+            id = get_id(line)
+            txt_data[id]["id"] = id
+            txt_data[id]["cross_references"] = get_cross_references(line)
+            txt_data[id]["enter_info"] = get_enter_info(re.split(re.compile('\.[X]'), line)[0])
+            txt_data[id]["authors"] = get_authors(re.split(re.compile('\.[X,N]'), line)[0])
+            txt_data[id]["publicationDate"] = get_publicationDate(re.split(re.compile('\.[X,N,A]'), line)[0])
+            txt_data[id]["abstract"] = get_abstract(re.split(re.compile('\.[X,N,A,B]'), line)[0])
+            txt_data[id]["title"] = re.split(re.compile('\.[X,N,A,B,W]'), line)[0].replace(".T", '')
+
 
     return txt_data
 
 
 
+
+def saveQueriesQesultInFile(reslut):
+    with open("real.json", "w") as outfile:
+        data = json.dumps({"data":reslut}, indent = 4)
+        outfile.write(data)
+    outfile.close()
+
+
+
+def readSavedQueries():
+    f = open('C:/Users/Admin/Desktop/ir_project/real.json')
+    data = json.load(f)
+    res = data["data"]
+    return res
 
 
 

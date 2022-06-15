@@ -4,6 +4,7 @@ import nltk
 from nltk import word_tokenize
 from nltk.corpus import wordnet as w
 from nltk.stem.snowball import PorterStemmer
+from dateparser.search import search_dates  # another option
 
 nltk.download('wordnet')
 
@@ -34,6 +35,8 @@ def lemma_words(data):
 
 def date_prossing(data):
 
+    str1 = "Let's meet sometime next Thursday"
+    print(search_dates(str1))
     matches = datefinder.find_dates(data)
     for match in matches:
         print(match)

@@ -2,7 +2,8 @@ from collections import defaultdict
 import re
 import matplotlib.pyplot as plt
 import pandas as pd
-from helper.caluclate_tfidf import calculateTfIdf
+from sklearn.feature_extraction.text import TfidfVectorizer
+
 from helper.clean_docs import cleanDocs
 from helper.file_helper import get_data_structerd_dataset
 from sklearn.cluster import KMeans
@@ -19,9 +20,17 @@ def calculateK():
     txt_data = defaultdict(dict)
     txt_data = get_data_structerd_dataset(PATH_TO_CRAN_TXT, ID_marker)
 
-    dataset =  cleanDocs(txt_data)
-    tfidf = calculateTfIdf(dataset)
-    X =tfidf
+    map =  cleanDocs(txt_data)
+    docs = []
+
+    for m in map:
+        if (map[m] != None):
+            if ('cleanDocs' in map[m].keys()):
+                docs.append(map[m]["cleanDocs"])
+
+    tfidf_vectorizer = TfidfVectorizer()
+    tfidf = tfidf_vectorizer.fit_transform(docs)
+    X = tfidf
     wcss = []
     for i in range(1, 200):
         kmeans = KMeans(n_clusters = i, init = 'k-means++', random_state = 42)
@@ -34,11 +43,18 @@ def calculateK():
 
 
 
-def kMeans(tf_idf):
-        km = KMeans(n_clusters=500, init='k-means++', random_state=0)
-        clusters = km.fit(tf_idf)
-        labels = clusters.labels_
-        df = pd.DataFrame(list(zip(tf_idf, labels)), columns=['data', 'cluster'])
-        df = df.sort_values(by=['cluster'])
-        print(clusters);
-        return df;
+def kMeans(map):
+    docs = []
+
+    for m in map:
+        if (map[m] != None):
+            if ('cleanDocs' in map[m].keys()):
+                docs.append(map[m]["cleanDocs"])
+    tfidf_vectorizer = TfidfVectorizer()
+    tfidf = tfidf_vectorizer.fit_transform(docs)
+    km = KMeans(n_clusters=30, init='k-means++', random_state=0)
+    clusters = km.fit(tfidf.docs)
+    labels = clusters.labels_
+    df = pd.DataFrame(list(zip(tfidf.docs, labels)), columns=['vector', 'cluster'])
+    df = df.sort_values(by=['cluster'])
+    return km;

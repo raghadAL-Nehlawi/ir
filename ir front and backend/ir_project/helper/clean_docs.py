@@ -2,7 +2,7 @@ import re
 import string
 import nltk as nltk
 import spacy
-from helper.stemming_words import stemming_words, lemma_words
+from helper.stemming_words import stemming_words, lemma_words, date_prossing
 
 
 def cleanDocs(documents):
@@ -17,8 +17,8 @@ def cleanDocs(documents):
   doc_length = len(documents)
   while i < doc_length:
       if documents[str(i)] is not None:
-          if len(documents[str(i )]) == 7:
-             if  documents[str(i )]['abstract'] is not None:
+          if len(documents[str(i)]) == 7:
+             if  documents[str(i)]['abstract'] is not None:
 
                 doc = documents[ str(i)]['abstract']
                 document_test = re.sub(r'[^\x00-\x7F]+', ' ', doc)
@@ -38,6 +38,7 @@ def cleanDocs(documents):
                 #date_prossing(document_test)
 
                 documents_clean.append(document_test)
+                documents[str(i)]["cleanDocs"] = document_test
              else:
                  documents_clean.append('')
           else:
@@ -49,7 +50,8 @@ def cleanDocs(documents):
       if i > doc_length:
           break
  # print(documents_clean)
-  return documents_clean;
+
+  return documents;
 
 
 
@@ -66,7 +68,6 @@ def replceShortcuts(s):
 
 
 def cleanQuery(query):
-    nltk.download('punkt')
     sp = spacy.load('en_core_web_sm')
     all_stopwords = sp.Defaults.stop_words
     document_test = re.sub(r'[^\x00-\x7F]+', ' ', query)
